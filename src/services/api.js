@@ -6,7 +6,7 @@ const getBaseUrl = () => {
         return 'http://localhost:8080';
     }
     // Fallback production URL if deployed
-    return 'https://billingsystem-backend-demo.onrender.com'; 
+    return 'https://billingsystem-backend-2.onrender.com'; 
 };
 
 export const API = {
