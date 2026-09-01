@@ -8,13 +8,12 @@ import DemoTutorial from './components/DemoTutorial';
 import { API } from './services/api';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [currentBill, setCurrentBill] = useState(null);
 
   // Dynamic Dashboard Statistics
   const [stats, setStats] = useState({ totalBills: 0, revenue: 0, average: 0 });
   const [isLoadingStats, setIsLoadingStats] = useState(false);
-  const [serverStatus, setServerStatus] = useState('Connected');
 
   // Fetch live metrics from backend database
   const fetchDashboardStats = useCallback(async () => {
@@ -34,29 +33,25 @@ function App() {
           revenue: totalRevenue,
           average: avgTicket
         });
-        setServerStatus('Connected');
       } else {
         setStats({ totalBills: 0, revenue: 0, average: 0 });
       }
     } catch (err) {
       console.error('Failed to load dashboard metrics:', err);
-      setServerStatus('Offline');
     } finally {
       setIsLoadingStats(false);
     }
   }, []);
 
-  // Fetch when dashboard tab becomes active
   useEffect(() => {
-    if (activeTab === 'overview' || activeTab === 'dashboard') {
+    if (activeTab === 'dashboard' || activeTab === 'overview') {
       fetchDashboardStats();
     }
   }, [activeTab, fetchDashboardStats]);
 
-  // Handler when a bill is successfully generated
   const handleBillCreated = (billData) => {
     setCurrentBill(billData);
-    fetchDashboardStats(); // Update stats immediately
+    fetchDashboardStats();
   };
 
   const handleResetBill = () => {
@@ -64,82 +59,82 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="layout">
       {/* Sidebar Navigation */}
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={(tab) => {
           setActiveTab(tab);
-          setCurrentBill(null); // Clear active bill on route change
+          setCurrentBill(null);
         }} 
       />
 
       {/* Main Content Area */}
-      <main className="main-content">
-        {/* Top Header Bar */}
-        <header className="top-header">
-          <div className="header-title">
-            <h2>
-              {activeTab === 'overview' && 'System Overview'}
-              {activeTab === 'voice' && 'Smart Voice Billing'}
-              {activeTab === 'text' && 'Fast Text Billing'}
+      <main className="main">
+        {/* Top Header */}
+        <div className="dashboard-header">
+          <div>
+            <h1>
+              {activeTab === 'dashboard' && 'System Overview'}
+              {activeTab === 'voice' && 'Voice Billing'}
+              {activeTab === 'text' && 'Text Billing'}
               {activeTab === 'lookup' && 'Search & Lookup Invoices'}
-              {activeTab === 'demo' && 'Interactive Guide & Tutorial'}
-            </h2>
+              {activeTab === 'demo' && 'Guide & Tutorial'}
+            </h1>
           </div>
-          <div className="server-badge">
+          <div className="server-status">
             <span>Server Status:</span>
-            <span className={`status-indicator ${serverStatus === 'Connected' ? 'online' : 'offline'}`}>
-              ● {serverStatus}
-            </span>
+            <span className="badge-connected">● Connected</span>
           </div>
-        </header>
+        </div>
 
-        {/* Overview / Dashboard Tab */}
-        {activeTab === 'overview' && (
-          <div className="dashboard-content">
-            {/* Stat Cards Grid */}
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-info">
-                  <span className="stat-label">TOTAL INVOICES</span>
-                  <h3 className="stat-value">
+        {/* Dashboard Overview Tab */}
+        {activeTab === 'dashboard' && (
+          <div>
+            {/* 3 Metric Cards */}
+            <div className="stats-row">
+              <div className="metric-card">
+                <div>
+                  <div className="metric-label">TOTAL INVOICES</div>
+                  <div className="metric-value">
                     {isLoadingStats ? '...' : stats.totalBills}
-                  </h3>
+                  </div>
                 </div>
-                <div className="stat-icon">📄</div>
+                <div className="metric-icon">📄</div>
               </div>
 
-              <div className="stat-card">
-                <div className="stat-info">
-                  <span className="stat-label">TOTAL REVENUE</span>
-                  <h3 className="stat-value">
+              <div className="metric-card">
+                <div>
+                  <div className="metric-label">TOTAL REVENUE</div>
+                  <div className="metric-value">
                     {isLoadingStats ? '...' : `₹ ${stats.revenue.toFixed(2)}`}
-                  </h3>
+                  </div>
                 </div>
-                <div className="stat-icon">💰</div>
+                <div className="metric-icon">💰</div>
               </div>
 
-              <div className="stat-card">
-                <div className="stat-info">
-                  <span className="stat-label">AVERAGE TICKET</span>
-                  <h3 className="stat-value">
+              <div className="metric-card">
+                <div>
+                  <div className="metric-label">AVERAGE TICKET</div>
+                  <div className="metric-value">
                     {isLoadingStats ? '...' : `₹ ${stats.average.toFixed(2)}`}
-                  </h3>
+                  </div>
                 </div>
-                <div className="stat-icon">📈</div>
+                <div className="metric-icon">📈</div>
               </div>
             </div>
 
-            {/* Smart Console Quick Action Banner */}
-            <div className="quick-action-card">
-              <h3>Smart Voice Billing Console</h3>
-              <p>
+            {/* Smart Console Quick Action Box */}
+            <div className="card-box" style={{ marginTop: '24px' }}>
+              <h2 style={{ fontSize: '20px', marginBottom: '12px', color: 'white' }}>
+                Smart Voice Billing Console
+              </h2>
+              <p style={{ color: 'var(--text-secondary, #94a3b8)', lineHeight: '1.6', marginBottom: '24px', fontSize: '14px' }}>
                 Increase check-out speed using our AI-driven voice parser. Speak the billing list naturally, 
                 and our system will transcribe, extract products, quantities, prices, calculate the total invoice, 
                 update inventory, and output downloadable PDF receipts.
               </p>
-              <div className="quick-buttons">
+              <div style={{ display: 'flex', gap: '14px' }}>
                 <button 
                   className="btn btn-primary" 
                   onClick={() => setActiveTab('voice')}
@@ -157,20 +152,20 @@ function App() {
           </div>
         )}
 
-        {/* Voice Billing Tab */}
+        {/* Voice Billing View */}
         {activeTab === 'voice' && (
-          <div className="billing-split-view">
-            <div className="input-panel">
+          <div className="two-col-grid">
+            <div className="card-box">
               <VoiceBilling onBillGenerated={handleBillCreated} />
             </div>
-            <div className="preview-panel">
+            <div className="card-box">
               {currentBill ? (
                 <InvoiceView bill={currentBill} onReset={handleResetBill} />
               ) : (
-                <div className="empty-preview">
-                  <div className="empty-icon">📄</div>
-                  <h3>Invoice Preview</h3>
-                  <p>
+                <div className="empty-state">
+                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>📄</div>
+                  <h3 style={{ color: 'white', marginBottom: '8px' }}>Invoice Preview</h3>
+                  <p style={{ color: 'var(--text-secondary, #94a3b8)', fontSize: '14px' }}>
                     Start recording on the left. Once processing is complete, 
                     your structured invoice details will appear here.
                   </p>
@@ -180,20 +175,20 @@ function App() {
           </div>
         )}
 
-        {/* Text Billing Tab */}
+        {/* Text Billing View */}
         {activeTab === 'text' && (
-          <div className="billing-split-view">
-            <div className="input-panel">
+          <div className="two-col-grid">
+            <div className="card-box">
               <TextBilling onBillGenerated={handleBillCreated} />
             </div>
-            <div className="preview-panel">
+            <div className="card-box">
               {currentBill ? (
                 <InvoiceView bill={currentBill} onReset={handleResetBill} />
               ) : (
-                <div className="empty-preview">
-                  <div className="empty-icon">📄</div>
-                  <h3>Invoice Preview</h3>
-                  <p>
+                <div className="empty-state">
+                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>📄</div>
+                  <h3 style={{ color: 'white', marginBottom: '8px' }}>Invoice Preview</h3>
+                  <p style={{ color: 'var(--text-secondary, #94a3b8)', fontSize: '14px' }}>
                     Type your billing prompt on the left. Once processed, 
                     your structured invoice details will appear here.
                   </p>
@@ -203,16 +198,16 @@ function App() {
           </div>
         )}
 
-        {/* Invoice Lookup Tab */}
+        {/* Invoice Lookup View */}
         {activeTab === 'lookup' && (
-          <div className="lookup-container">
+          <div className="card-box">
             <InvoiceLookup />
           </div>
         )}
 
-        {/* Tutorial Guide Tab */}
+        {/* Tutorial View */}
         {activeTab === 'demo' && (
-          <div className="tutorial-container">
+          <div className="card-box">
             <DemoTutorial />
           </div>
         )}
