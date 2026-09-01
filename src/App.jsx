@@ -78,11 +78,11 @@ function App() {
         {/* Top Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
           <h1 style={{ fontSize: '26px', fontWeight: '700', margin: 0, color: '#fff' }}>
-            {activeTab === 'overview' || activeTab === 'dashboard' ? 'System Overview' : ''}
+            {(activeTab === 'overview' || activeTab === 'dashboard') && 'System Overview'}
             {activeTab === 'voice' && 'Voice Billing'}
             {activeTab === 'text' && 'Text Billing'}
-            {activeTab === 'lookup' && 'Search & Lookup Invoices'}
-            {activeTab === 'demo' && 'Demo & Guide'}
+            {(activeTab === 'lookup' || activeTab === 'find' || activeTab === 'invoices') && 'Search & Lookup Invoices'}
+            {(activeTab === 'demo' || activeTab === 'guide' || activeTab === 'tutorial') && 'Demo & Guide'}
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#111726', padding: '6px 14px', borderRadius: '20px', border: '1px solid #1e293b', fontSize: '13px' }}>
             <span style={{ color: '#94a3b8' }}>Server Status:</span>
@@ -197,15 +197,15 @@ function App() {
           </div>
         )}
 
-        {/* Lookup View */}
-        {activeTab === 'lookup' && (
+        {/* Find / Lookup View (matches 'lookup', 'find', or 'invoices') */}
+        {(activeTab === 'lookup' || activeTab === 'find' || activeTab === 'invoices') && (
           <div style={{ background: '#111726', border: '1px solid #1e293b', borderRadius: '14px', padding: '24px' }}>
             <InvoiceLookup />
           </div>
         )}
 
-        {/* Demo View */}
-        {activeTab === 'demo' && (
+        {/* Demo / Guide View (matches 'demo', 'guide', or 'tutorial') */}
+        {(activeTab === 'demo' || activeTab === 'guide' || activeTab === 'tutorial') && (
           <div style={{ background: '#111726', border: '1px solid #1e293b', borderRadius: '14px', padding: '24px' }}>
             <DemoTutorial />
           </div>
