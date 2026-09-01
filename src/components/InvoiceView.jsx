@@ -69,29 +69,35 @@ const InvoiceView = ({ bill, onReset }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {bill.items && bill.items.map((item, index) => (
-                            <tr key={index}>
-                                <td style={{ color: 'white', fontWeight: '500' }}>
-                                    {item.name}
-                                </td>
-                                <td style={{ textAlign: 'center' }}>
-                                    {item.qty} <span style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>{item.unit}</span>
-                                </td>
-                                <td style={{ textAlign: 'right' }}>
-                                    ₹ {item.price.toFixed(2)}
-                                </td>
-                                <td style={{ textAlign: 'right', color: 'white', fontWeight: '600' }}>
-                                    ₹ {item.totalprice.toFixed(2)}
-                                </td>
-                            </tr>
-                        ))}
+                        {bill.items && bill.items.map((item, index) => {
+                            const lineTotal = (item.totalprice && item.totalprice > 0)
+                                ? item.totalprice
+                                : (Number(item.qty || 0) * Number(item.price || 0));
+
+                            return (
+                                <tr key={index}>
+                                    <td style={{ color: 'white', fontWeight: '500' }}>
+                                        {item.name}
+                                    </td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        {item.qty} <span style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>{item.unit}</span>
+                                    </td>
+                                    <td style={{ textAlign: 'right' }}>
+                                        ₹ {Number(item.price || 0).toFixed(2)}
+                                    </td>
+                                    <td style={{ textAlign: 'right', color: 'white', fontWeight: '600' }}>
+                                        ₹ {lineTotal.toFixed(2)}
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
 
                 <div className="invoice-total-row">
                     <span style={{ fontSize: '16px', color: 'var(--text-secondary)' }}>Total Amount</span>
                     <strong style={{ fontSize: '26px', color: 'white', background: 'var(--primary-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        ₹ {bill.total.toFixed(2)}
+                        ₹ {Number(bill.total || 0).toFixed(2)}
                     </strong>
                 </div>
             </div>
