@@ -4,6 +4,7 @@ import TextBilling from './components/TextBilling';
 import VoiceBilling from './components/VoiceBilling';
 import InvoiceView from './components/InvoiceView';
 import InvoiceLookup from './components/InvoiceLookup';
+import DemoTutorial from './components/Demotutorial';
 import { API } from './services/api';
 
 function App() {
@@ -197,10 +198,18 @@ function App() {
             <InvoiceLookup />
           </div>
         )}
+        {activeTab === 'demo' && (
+  <DemoTutorial onTryPrompt={(text) => {
+    setActiveTab('voice');
+  }} />
+)}
       </main>
     </div>
   );
+  
 }
+
+
 
 export default App;
 //
